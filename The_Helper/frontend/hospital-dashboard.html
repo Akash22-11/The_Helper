@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Dashboard – Black Gold Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0d0f;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.07);
+      --accent1: #ff6a00;
+      --accent2: #ee0979;
+      --text: #f0f0f0;
+      --muted: #777;
+      --green: #00e676;
+      --red: #ff4444;
+      --yellow: #ffb300;
+      --blue: #2196f3;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.85rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* MAIN GRID */
+    .dashboard-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 28px;
+    }
+
+    /* SIDEBAR STATS */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(255,106,0,0.12);
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ALERTS SECTION */
+    .alerts-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-tab {
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .filter-tab.active {
+      border-color: var(--accent1);
+      color: var(--accent1);
+      background: rgba(255,106,0,0.08);
+    }
+
+    /* ALERT CARD */
+    .alert-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s;
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert-card.urgent {
+      border-color: var(--red);
+      background: rgba(255,68,68,0.05);
+      animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { border-color: var(--red); }
+      50% { border-color: var(--accent1); }
+    }
+
+    .alert-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(255,106,0,0.15);
+    }
+
+    .alert-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .alert-patient {
+      flex: 1;
+    }
+
+    .patient-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .patient-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .alert-time {
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255,68,68,0.1);
+      color: var(--red);
+      white-space: nowrap;
+    }
+
+    .medical-snapshot {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .snapshot-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .snapshot-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .snapshot-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .snapshot-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .snapshot-value.critical {
+      color: var(--red);
+    }
+
+    .location-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: rgba(33,150,243,0.05);
+      border: 1px solid rgba(33,150,243,0.2);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-accept {
+      background: var(--green);
+      color: #000;
+    }
+
+    .btn-accept:hover {
+      background: #00ff88;
+      transform: translateY(-2px);
+    }
+
+    .btn-decline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-decline:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .btn-view {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-view:hover {
+      background: #42a5f5;
+      transform: translateY(-2px);
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    .empty-text {
+      font-size: 1.1rem;
+    }
+
+    /* NOTIFICATION TOAST */
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 40px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      color: #fff;
+      padding: 20px 28px;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(255,106,0,0.4);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      z-index: 1000;
+      animation: slideInRight 0.4s ease-out;
+      display: none;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 18px 24px; }
+      .action-buttons { flex-direction: column; }
+      .snapshot-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <span>🏥</span>
+      Hospital Dashboard
+    </div>
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      <span id="connection-status">Connected</span>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD -->
+  <div class="dashboard-grid">
+    <!-- SIDEBAR STATS -->
+    <aside class="sidebar">
+      <div class="stat-card">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-value" id="active-count">0</div>
+        <div class="stat-label">Active Alerts</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="responded-today">0</div>
+        <div class="stat-label">Responded Today</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-value" id="avg-response">--</div>
+        <div class="stat-label">Avg Response Time</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">💾</div>
+        <div class="stat-value" id="total-saved">247</div>
+        <div class="stat-label">Total Saved</div>
+      </div>
+    </aside>
+
+    <!-- ALERTS SECTION -->
+    <main class="alerts-section">
+      <div class="section-header">
+        <h1 class="section-title">
+          <span>🚑</span>
+          <span>Incoming Alerts</span>
+        </h1>
+        <div class="filter-tabs">
+          <div class="filter-tab active" onclick="filterAlerts('all')">All</div>
+          <div class="filter-tab" onclick="filterAlerts('urgent')">Urgent</div>
+          <div class="filter-tab" onclick="filterAlerts('acknowledged')">Acknowledged</div>
+        </div>
+      </div>
+
+      <div id="alerts-container">
+        <!-- Populated by JS -->
+        <div class="empty-state">
+          <div class="empty-icon">📡</div>
+          <div class="empty-text">Listening for emergency alerts...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- AUDIO ALERT -->
+  <audio id="alert-sound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2S57OihUBALTKXh8bllHQU2jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQU1jdXzzHgsBS1+zPLaizsKGGS67OmhTxALTqbi8bllHQ==" type="audio/wav">
+  </audio>
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    // Configuration
+    const API_BASE = 'http://localhost:5000/api';
+    let socket = null;
+    let activeAlerts = [];
+    let currentFilter = 'all';
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      checkHospitalAuth();
+    });
+
+    // Auth Check
+    function checkHospitalAuth() {
+      const token = localStorage.getItem('hospital_token');
+      
+      if (!token) {
+        promptHospitalLogin();
+        return;
+      }
+
+      connectSocket(token);
+    }
+
+    // Hospital Login
+    function promptHospitalLogin() {
+      const credentials = prompt('Hospital Login\n\nEnter: email,password');
+      if (!credentials) {
+        alert('Authentication required');
+        return;
+      }
+
+      const [email, password] = credentials.split(',').map(s => s.trim());
+      loginHospital(email, password);
+    }
+
+    async function loginHospital(email, password) {
+      try {
+        const response = await fetch(`${API_BASE}/auth/hospital/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        
+        if (data.token) {
+          localStorage.setItem('hospital_token', data.token);
+          localStorage.setItem('hospital', JSON.stringify(data.hospital));
+          connectSocket(data.token);
+        } else {
+          alert('Login failed: ' + data.message);
+          promptHospitalLogin();
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Login failed');
+      }
+    }
+
+    // Socket Connection
+    function connectSocket(token) {
+      socket = io(API_BASE.replace('/api', ''), {
+        auth: { token }
+      });
+
+      socket.on('connect', () => {
+        console.log('✓ Connected to SOS network');
+        document.getElementById('connection-status').textContent = 'Connected';
+        showToast('✓ Connected to emergency network');
+      });
+
+      socket.on('disconnect', () => {
+        document.getElementById('connection-status').textContent = 'Disconnected';
+      });
+
+      socket.on('sos:incoming', (data) => {
+        console.log('New SOS alert:', data);
+        playAlertSound();
+        addNewAlert(data);
+        showToast(`🚨 NEW EMERGENCY: ${data.user.name}`);
+        
+        // Browser notification
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification('🚨 Emergency Alert', {
+            body: `${data.user.name} needs help - ${(data.distanceMeters / 1000).toFixed(1)}km away`,
+            requireInteraction: true,
+            tag: data.sosEventId
+          });
+        }
+      });
+
+      socket.on('sos:cancelled', (data) => {
+        removeAlert(data.sosEventId);
+        showToast('Alert cancelled by patient');
+      });
+    }
+
+    // Add New Alert
+    function addNewAlert(data) {
+      activeAlerts.unshift(data);
+      updateStats();
+      renderAlerts();
+    }
+
+    // Remove Alert
+    function removeAlert(sosEventId) {
+      activeAlerts = activeAlerts.filter(a => a.sosEventId !== sosEventId);
+      updateStats();
+      renderAlerts();
+    }
+
+    // Render Alerts
+    function renderAlerts() {
+      const container = document.getElementById('alerts-container');
+      
+      const filtered = activeAlerts.filter(alert => {
+        if (currentFilter === 'all') return true;
+        if (currentFilter === 'urgent') return !alert.acknowledged;
+        if (currentFilter === 'acknowledged') return alert.acknowledged;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📡</div>
+            <div class="empty-text">No alerts in this category</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(alert => `
+        <div class="alert-card ${!alert.acknowledged ? 'urgent' : ''}" id="alert-${alert.sosEventId}">
+          <div class="alert-header">
+            <div class="alert-patient">
+              <div class="patient-name">${alert.user.name}</div>
+              <div class="patient-meta">
+                <span>📞 ${alert.user.phone}</span>
+                <span>📍 ${(alert.distanceMeters / 1000).toFixed(1)} km away</span>
+              </div>
+            </div>
+            <div class="alert-time">${timeAgo(alert.timestamp)}</div>
+          </div>
+
+          <div class="medical-snapshot">
+            <div class="snapshot-title">🩺 Medical Snapshot</div>
+            <div class="snapshot-grid">
+              <div class="snapshot-item">
+                <div class="snapshot-label">Blood Group</div>
+                <div class="snapshot-value ${alert.user.medicalSnapshot.bloodGroup === 'Unknown' ? 'critical' : ''}">
+                  ${alert.user.medicalSnapshot.bloodGroup || 'Unknown'}
+                </div>
+              </div>
+              <div class="snapshot-item">
+                <div class="snapshot-label">Allergies</div>
+                <div class="snapshot-value">
+                  ${alert.user.medicalSnapshot.allergies?.join(', ') || 'None listed'}
+                </div>
+              </div>
+              <div class="snapshot-item">
+                <div class="snapshot-label">Conditions</div>
+                <div class="snapshot-value">
+                  ${alert.user.medicalSnapshot.medicalConditions?.join(', ') || 'None listed'}
+                </div>
+              </div>
+              <div class="snapshot-item">
+                <div class="snapshot-label">Medications</div>
+                <div class="snapshot-value">
+                  ${alert.user.medicalSnapshot.currentMedications?.join(', ') || 'None listed'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="location-info">
+            <span>📍</span>
+            <span>${alert.address || `Lat: ${alert.coordinates[1].toFixed(4)}, Lng: ${alert.coordinates[0].toFixed(4)}`}</span>
+          </div>
+
+          <div class="action-buttons">
+            ${!alert.acknowledged ? `
+              <button class="btn btn-accept" onclick="acceptAlert('${alert.sosEventId}')">
+                <span>✓</span>
+                <span>Accept & Dispatch</span>
+              </button>
+              <button class="btn btn-decline" onclick="declineAlert('${alert.sosEventId}')">
+                <span>✗</span>
+                <span>Decline</span>
+              </button>
+            ` : `
+              <button class="btn btn-view" onclick="viewOnMap('${alert.coordinates[1]}', '${alert.coordinates[0]}')">
+                <span>🗺️</span>
+                <span>View on Map</span>
+              </button>
+            `}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Accept Alert
+    async function acceptAlert(sosEventId) {
+      try {
+        const response = await fetch(`${API_BASE}/sos/${sosEventId}/hospital/accept`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('hospital_token')}`
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          const alert = activeAlerts.find(a => a.sosEventId === sosEventId);
+          if (alert) alert.acknowledged = true;
+          renderAlerts();
+          showToast('✓ Dispatching help to patient');
+          
+          // Open map
+          const coords = alert.coordinates;
+          viewOnMap(coords[1], coords[0]);
+        }
+      } catch (error) {
+        console.error('Accept error:', error);
+        alert('Failed to accept alert');
+      }
+    }
+
+    // Decline Alert
+    async function declineAlert(sosEventId) {
+      if (!confirm('Decline this emergency alert?')) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/sos/${sosEventId}/hospital/decline`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('hospital_token')}`
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          removeAlert(sosEventId);
+          showToast('Alert declined');
+        }
+      } catch (error) {
+        console.error('Decline error:', error);
+      }
+    }
+
+    // View on Map
+    function viewOnMap(lat, lng) {
+      window.open(`https://www.google.com/maps?q=${lat},${lng}&z=16`, '_blank');
+    }
+
+    // Filter Alerts
+    function filterAlerts(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      renderAlerts();
+    }
+
+    // Update Stats
+    function updateStats() {
+      document.getElementById('active-count').textContent = activeAlerts.length;
+      document.getElementById('responded-today').textContent = 
+        activeAlerts.filter(a => a.acknowledged).length;
+    }
+
+    // Time Ago
+    function timeAgo(timestamp) {
+      const seconds = Math.floor((Date.now() - new Date(timestamp)) / 1000);
+      if (seconds < 60) return `${seconds}s ago`;
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes}m ago`;
+      const hours = Math.floor(minutes / 60);
+      return `${hours}h ago`;
+    }
+
+    // Toast Notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // Play Alert Sound
+    function playAlertSound() {
+      const audio = document.getElementById('alert-sound');
+      audio.play().catch(e => console.log('Audio play failed:', e));
+      
+      // Vibrate if supported
+      if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 200]);
+      }
+    }
+
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // Update time display every 30 seconds
+    setInterval(() => {
+      if (activeAlerts.length > 0) {
+        renderAlerts();
+      }
+    }, 30000);
+  </script>
+</body>
+</html>

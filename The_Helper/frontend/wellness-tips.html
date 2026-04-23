@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wellness Tips – Black Gold</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c0e;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.07);
+      --accent1: #ff6a00;
+      --accent2: #ee0979;
+      --text: #f0f0f0;
+      --muted: #777;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .bg-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob1 { width: 500px; height: 500px; background: rgba(255,106,0,0.08); top: -100px; right: -100px; }
+    .blob2 { width: 400px; height: 400px; background: rgba(238,9,121,0.06); bottom: 0; left: -100px; }
+
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .back-btn { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .back-btn:hover { color: var(--accent1); }
+
+    /* HERO */
+    .hero {
+      position: relative; z-index: 10;
+      text-align: center;
+      padding: 70px 20px 50px;
+      animation: fadeDown 0.8s ease-out;
+    }
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 18px;
+      border: 1px solid rgba(255,106,0,0.35);
+      border-radius: 50px;
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 5.5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p { color: var(--muted); max-width: 500px; margin: 0 auto 40px; line-height: 1.6; }
+
+    /* CATEGORY TABS */
+    .cats {
+      position: relative; z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 20px 50px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.2s ease-out both;
+    }
+    .cat-btn {
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cat-btn.active, .cat-btn:hover {
+      border-color: var(--accent1);
+      color: var(--accent1);
+      background: rgba(255,106,0,0.08);
+    }
+
+    /* DAILY TRACKER */
+    .tracker-section {
+      position: relative; z-index: 10;
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 24px 50px;
+      animation: fadeUp 0.8s 0.3s ease-out both;
+    }
+    .tracker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .tracker-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .tracker-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(255,106,0,0.15);
+      border-color: rgba(255,106,0,0.3);
+    }
+    .tracker-icon { font-size: 2.2rem; margin-bottom: 12px; display: block; }
+    .tracker-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+    .tracker-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tracker-sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      width: 100%;
+      height: 5px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 10px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      transition: width 1.5s ease-out;
+    }
+
+    /* TIPS GRID */
+    .tips-section {
+      position: relative; z-index: 10;
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .sec-head {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .tip-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(.22,.61,.36,1), box-shadow 0.35s, border-color 0.35s;
+      animation: fadeUp 0.6s ease-out both;
+    }
+    .tip-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(255,106,0,0.18);
+      border-color: rgba(255,106,0,0.3);
+    }
+    .tip-top {
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+    .tip-body { padding: 20px 22px 24px; }
+    .tip-cat {
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 8px;
+    }
+    .tip-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .tip-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .read-more {
+      font-size: 0.82rem;
+      color: var(--accent1);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 0.2s;
+    }
+    .read-more:hover { gap: 10px; }
+
+    /* QUOTE BANNER */
+    .quote-banner {
+      position: relative; z-index: 10;
+      max-width: 900px; margin: 0 auto 60px;
+      padding: 0 24px;
+      animation: fadeUp 0.8s 0.4s ease-out both;
+    }
+    .quote-inner {
+      background: linear-gradient(135deg, rgba(255,106,0,0.12), rgba(238,9,121,0.12));
+      border: 1px solid rgba(255,106,0,0.2);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+    }
+    .quote-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .quote-attr { color: var(--muted); font-size: 0.88rem; }
+
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-30px);} to {opacity:1; transform:translateY(0);}}
+    @keyframes fadeUp { from { opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);}}
+    .tip-card:nth-child(2){animation-delay:.08s}
+    .tip-card:nth-child(3){animation-delay:.16s}
+    .tip-card:nth-child(4){animation-delay:.24s}
+    .tip-card:nth-child(5){animation-delay:.32s}
+    .tip-card:nth-child(6){animation-delay:.40s}
+
+    @media(max-width:700px){
+      .tracker-grid{grid-template-columns:repeat(2,1fr);}
+      header{padding:18px 20px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+
+  <header>
+    <div class="logo">🌱 Black Gold Health</div>
+    <a href="health_home_black_gold__1_.html" class="back-btn">← Back to Home</a>
+  </header>
+
+  <div class="hero">
+    <div class="hero-tag">🌱 Wellness Tips</div>
+    <h1>Live Better,<br><span>Feel Stronger</span></h1>
+    <p>Daily health insights, science-backed tips, and expert guidance to help you thrive every single day.</p>
+  </div>
+
+  <div class="cats">
+    <div class="cat-btn active">🌟 All</div>
+    <div class="cat-btn">🏃 Fitness</div>
+    <div class="cat-btn">🥗 Nutrition</div>
+    <div class="cat-btn">🧠 Mental Health</div>
+    <div class="cat-btn">😴 Sleep</div>
+    <div class="cat-btn">💧 Hydration</div>
+  </div>
+
+  <!-- TODAY'S TRACKER -->
+  <div class="tracker-section">
+    <div style="font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:700; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:20px;">Today's Progress</div>
+    <div class="tracker-grid" id="tracker-grid"></div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-banner">
+    <div class="quote-inner">
+      <div class="quote-text">"Take care of your body. It's the only place you have to live."</div>
+      <div class="quote-attr">— Jim Rohn</div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tips-section">
+    <div class="sec-head">Today's Wellness Tips</div>
+    <div class="tips-grid" id="tips-grid"></div>
+  </div>
+
+  <script>
+    const trackers = [
+      { icon: "💧", label: "Water Intake", val: "1.8L", sub: "Goal: 2.5L", pct: 72 },
+      { icon: "🚶", label: "Steps", val: "6,240", sub: "Goal: 10,000", pct: 62 },
+      { icon: "😴", label: "Sleep", val: "7.2h", sub: "Goal: 8h", pct: 90 },
+      { icon: "🔥", label: "Calories", val: "1,820", sub: "Goal: 2,200", pct: 83 },
+    ];
+
+    const tGrid = document.getElementById('tracker-grid');
+    trackers.forEach(t => {
+      tGrid.innerHTML += `
+        <div class="tracker-card">
+          <span class="tracker-icon">${t.icon}</span>
+          <div class="tracker-label">${t.label}</div>
+          <div class="tracker-val">${t.val}</div>
+          <div class="tracker-sub">${t.sub}</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:0%" data-pct="${t.pct}"></div></div>
+        </div>`;
+    });
+
+    // animate bars
+    setTimeout(() => {
+      document.querySelectorAll('.progress-fill').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+    }, 300);
+
+    const tips = [
+      { cat: "Hydration", emoji: "💧", bg: "linear-gradient(135deg,rgba(0,150,255,0.15),rgba(0,80,200,0.08))", title: "Start Your Day with Water", text: "Drink a glass of water before anything else. It kickstarts metabolism and flushes out overnight toxins." },
+      { cat: "Nutrition", emoji: "🥗", bg: "linear-gradient(135deg,rgba(0,200,80,0.15),rgba(0,120,60,0.08))", title: "The Power of Colorful Plates", text: "Aim for 5 different colors on your plate daily. Each color represents unique phytonutrients your body needs." },
+      { cat: "Fitness", emoji: "🏃", bg: "linear-gradient(135deg,rgba(255,106,0,0.15),rgba(200,50,0,0.08))", title: "10,000 Steps Myth Busted", text: "Even 6,000 steps a day significantly reduces risk of cardiovascular disease. Start small, stay consistent." },
+      { cat: "Mental Health", emoji: "🧠", bg: "linear-gradient(135deg,rgba(150,0,255,0.15),rgba(100,0,200,0.08))", title: "2-Minute Mindfulness Break", text: "Close your eyes and focus only on your breath for 2 minutes. This resets your stress hormones effectively." },
+      { cat: "Sleep", emoji: "😴", bg: "linear-gradient(135deg,rgba(0,100,200,0.15),rgba(0,50,150,0.08))", title: "The 10–3–2–1–0 Sleep Rule", text: "No caffeine 10hrs before bed, no alcohol 3hrs, no food 2hrs, no screens 1hr, and hit zero snooze." },
+      { cat: "Fitness", emoji: "🤸", bg: "linear-gradient(135deg,rgba(255,200,0,0.12),rgba(200,100,0,0.08))", title: "Stretch Before You Stand", text: "Spend 5 minutes stretching in bed before rising. It increases blood flow and reduces morning stiffness." },
+    ];
+
+    const tipsGrid = document.getElementById('tips-grid');
+    tips.forEach(tip => {
+      tipsGrid.innerHTML += `
+        <div class="tip-card">
+          <div class="tip-top" style="background:${tip.bg}">${tip.emoji}</div>
+          <div class="tip-body">
+            <div class="tip-cat">${tip.cat}</div>
+            <div class="tip-title">${tip.title}</div>
+            <div class="tip-text">${tip.text}</div>
+            <span class="read-more">Read more →</span>
+          </div>
+        </div>`;
+    });
+
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

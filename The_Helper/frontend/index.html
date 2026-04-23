@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Black Gold Health – Emergency Care at Your Fingertips</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0d0f;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.07);
+      --accent1: #ff6a00;
+      --accent2: #ee0979;
+      --text: #f0f0f0;
+      --muted: #777;
+      --green: #00e676;
+      --red: #ff4444;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* AMBIENT EFFECTS */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb1 { width: 600px; height: 600px; background: rgba(255,106,0,0.1); top: -200px; right: -200px; }
+    .orb2 { width: 500px; height: 500px; background: rgba(238,9,121,0.08); bottom: -100px; left: -150px; }
+
+    /* HEADER */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-link:hover { color: var(--accent1); }
+
+    .user-badge {
+      padding: 8px 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .user-badge:hover {
+      border-color: var(--accent1);
+      background: rgba(255,106,0,0.05);
+    }
+
+    /* HERO SOS */
+    .hero-sos {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 100px 20px 80px;
+      animation: fadeDown 0.8s ease-out;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      border: 1px solid rgba(0,230,118,0.4);
+      border-radius: 50px;
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 32px;
+    }
+
+    .hero-sos h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    
+    .hero-sos h1 span {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sos p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 560px;
+      margin: 0 auto 50px;
+      line-height: 1.7;
+    }
+
+    /* SOS BUTTON */
+    .sos-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 30px;
+    }
+
+    .sos-ring {
+      position: absolute;
+      inset: -30px;
+      border-radius: 50%;
+      border: 2px solid var(--accent1);
+      opacity: 0;
+      animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+    }
+
+    .sos-ring:nth-child(2) { animation-delay: 0.5s; }
+    .sos-ring:nth-child(3) { animation-delay: 1s; }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { opacity: 0.3; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .sos-btn {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      color: #fff;
+      font-size: 3.5rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 20px 60px rgba(255,106,0,0.4);
+    }
+
+    .sos-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 25px 80px rgba(255,106,0,0.6);
+    }
+
+    .sos-btn:active {
+      transform: scale(0.95);
+    }
+
+    .sos-btn-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-top: -10px;
+    }
+
+    .sos-help {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* QUICK ACTIONS */
+    .quick-actions {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 0 24px 60px;
+      animation: fadeUp 0.8s 0.3s ease-out both;
+    }
+
+    .action-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      min-width: 240px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .action-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(255,106,0,0.15);
+      border-color: rgba(255,106,0,0.3);
+    }
+
+    .action-icon {
+      font-size: 2.5rem;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .action-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .action-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* FEATURES GRID */
+    .features-section {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-tag {
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.3s;
+      animation: fadeUp 0.6s ease-out both;
+    }
+
+    .feature-card:nth-child(2) { animation-delay: 0.1s; }
+    .feature-card:nth-child(3) { animation-delay: 0.2s; }
+    .feature-card:nth-child(4) { animation-delay: 0.3s; }
+    .feature-card:nth-child(5) { animation-delay: 0.4s; }
+    .feature-card:nth-child(6) { animation-delay: 0.5s; }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255,106,0,0.3);
+      box-shadow: 0 20px 50px rgba(255,106,0,0.12);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .stats-inner {
+      background: linear-gradient(135deg, rgba(255,106,0,0.1), rgba(238,9,121,0.1));
+      border: 1px solid rgba(255,106,0,0.2);
+      border-radius: 20px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      text-align: center;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 0.88rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .close-btn:hover { color: var(--text); }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent1);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,106,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 18px 24px; }
+      .nav-links { gap: 16px; }
+      .sos-btn { width: 180px; height: 180px; font-size: 2.8rem; }
+      .sos-btn-text { font-size: 1.2rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .stats-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-orb orb1"></div>
+  <div class="glow-orb orb2"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <span>🚑</span>
+      Black Gold Health
+    </div>
+    <nav class="nav-links">
+      <a href="hospital-finder.html" class="nav-link">🏥 Hospitals</a>
+      <a href="pharmacy-finder.html" class="nav-link">💊 Pharmacies</a>
+      <a href="wellness-tips.html" class="nav-link">🌱 Wellness</a>
+      <a href="prescription-organiser.html" class="nav-link">📋 Prescriptions</a>
+      <div class="user-badge" onclick="toggleUserMenu()">
+        <span>👤</span>
+        <span id="user-name">Guest</span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO SOS -->
+  <section class="hero-sos">
+    <div class="status-pill">
+      <span>●</span>
+      System Online
+    </div>
+    <h1>Emergency Help<br>in <span>One Tap</span></h1>
+    <p>Instantly alert nearby hospitals with your location and medical profile. Help arrives faster when every second counts.</p>
+
+    <div class="sos-container">
+      <div class="sos-ring"></div>
+      <div class="sos-ring"></div>
+      <div class="sos-ring"></div>
+      <button class="sos-btn" onclick="triggerSOS()">
+        🚨
+        <div class="sos-btn-text">SOS</div>
+      </button>
+    </div>
+
+    <div class="sos-help">Press and hold for 2 seconds to activate emergency alert</div>
+  </section>
+
+  <!-- QUICK ACTIONS -->
+  <section class="quick-actions">
+    <div class="action-card" onclick="window.location.href='hospital-finder.html'">
+      <span class="action-icon">🏥</span>
+      <div class="action-title">Find Hospitals</div>
+      <div class="action-desc">Locate nearby hospitals with real-time bed availability</div>
+    </div>
+
+    <div class="action-card" onclick="window.location.href='pharmacy-finder.html'">
+      <span class="action-icon">💊</span>
+      <div class="action-title">Find Pharmacies</div>
+      <div class="action-desc">Search open pharmacies and order medicines online</div>
+    </div>
+
+    <div class="action-card" onclick="window.location.href='prescription-organiser.html'">
+      <span class="action-icon">📋</span>
+      <div class="action-title">My Prescriptions</div>
+      <div class="action-desc">Manage medications and track refills</div>
+    </div>
+
+    <div class="action-card" onclick="openProfileModal()">
+      <span class="action-icon">👤</span>
+      <div class="action-title">Medical Profile</div>
+      <div class="action-desc">Update your health information and emergency contacts</div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-value">2,847</div>
+        <div class="stat-label">Lives Saved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">&lt;3min</div>
+        <div class="stat-label">Avg Response Time</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">156</div>
+        <div class="stat-label">Partner Hospitals</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">Always Available</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="section-head">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title">Your Safety, Our Priority</h2>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Instant Geolocation</div>
+        <div class="feature-desc">Your exact location is captured and shared with nearby hospitals the moment you tap SOS.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🏥</div>
+        <div class="feature-title">Multi-Channel Alerts</div>
+        <div class="feature-desc">Hospitals receive simultaneous SMS, email, and real-time notifications for fastest response.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💉</div>
+        <div class="feature-title">Medical Profile Sharing</div>
+        <div class="feature-desc">Your blood type, allergies, and medications are instantly visible to responding hospitals.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">👨‍👩‍👧</div>
+        <div class="feature-title">Emergency Contacts</div>
+        <div class="feature-desc">Your saved contacts are automatically notified when you trigger an SOS alert.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Secure & Private</div>
+        <div class="feature-desc">End-to-end encryption ensures your medical data is shared only during emergencies.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Real-Time Tracking</div>
+        <div class="feature-desc">Monitor which hospitals have received and acknowledged your alert in real-time.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Black Gold Health. Powered by compassion and cutting-edge technology.</p>
+    <p style="margin-top: 8px;">Emergency? Call 112 | Non-Emergency Support: 1800-XXX-XXXX</p>
+  </footer>
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Welcome Back</div>
+        <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="login-email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="login-password" required>
+        </div>
+        <button type="submit" class="btn-primary">Sign In</button>
+      </form>
+      <p style="text-align: center; margin-top: 20px; color: var(--muted); font-size: 0.85rem;">
+        Don't have an account? <a href="#" onclick="openModal('registerModal'); closeModal('loginModal')" style="color: var(--accent1);">Register</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- REGISTER MODAL -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Create Account</div>
+        <button class="close-btn" onclick="closeModal('registerModal')">&times;</button>
+      </div>
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="reg-name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="reg-email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" class="form-input" id="reg-phone" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="reg-password" required>
+        </div>
+        <button type="submit" class="btn-primary">Create Account</button>
+      </form>
+      <p style="text-align: center; margin-top: 20px; color: var(--muted); font-size: 0.85rem;">
+        Already have an account? <a href="#" onclick="openModal('loginModal'); closeModal('registerModal')" style="color: var(--accent1);">Sign In</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-title">Medical Profile</div>
+        <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+      </div>
+      <form onsubmit="handleProfileUpdate(event)">
+        <div class="form-group">
+          <label class="form-label">Blood Group</label>
+          <select class="form-input" id="blood-group">
+            <option value="Unknown">Unknown</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Allergies (comma separated)</label>
+          <input type="text" class="form-input" id="allergies" placeholder="Penicillin, Peanuts">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Medical Conditions</label>
+          <input type="text" class="form-input" id="conditions" placeholder="Diabetes, Hypertension">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Medications</label>
+          <input type="text" class="form-input" id="medications" placeholder="Metformin, Lisinopril">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Emergency Contact Name</label>
+          <input type="text" class="form-input" id="ec-name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Emergency Contact Phone</label>
+          <input type="tel" class="form-input" id="ec-phone">
+        </div>
+        <button type="submit" class="btn-primary">Save Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    // Configuration
+    const API_BASE = 'http://localhost:5000/api';
+    let currentUser = null;
+    let socket = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      initGeolocation();
+    });
+
+    // Auth Check
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      
+      if (token && user) {
+        currentUser = JSON.parse(user);
+        document.getElementById('user-name').textContent = currentUser.name;
+        connectSocket(token);
+      } else {
+        document.getElementById('user-name').textContent = 'Guest';
+        setTimeout(() => openModal('loginModal'), 1000);
+      }
+    }
+
+    // Socket Connection
+    function connectSocket(token) {
+      socket = io(API_BASE.replace('/api', ''), {
+        auth: { token }
+      });
+
+      socket.on('connect', () => {
+        console.log('✓ Connected to emergency network');
+      });
+
+      socket.on('sos:hospital_responding', (data) => {
+        console.log('Hospital responding:', data);
+        showNotification(`🏥 ${data.hospital.name} is sending help!`);
+      });
+
+      socket.on('sos:eta_update', (data) => {
+        showNotification(`⏱️ Estimated arrival: ${data.etaMinutes} minutes`);
+      });
+    }
+
+    // Geolocation
+    function initGeolocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => console.log('Location enabled'),
+          (err) => console.warn('Location access denied')
+        );
+      }
+    }
+
+    // SOS Trigger
+    async function triggerSOS() {
+      if (!currentUser) {
+        openModal('loginModal');
+        return;
+      }
+
+      const confirmed = confirm('🚨 EMERGENCY ALERT\n\nThis will notify nearby hospitals immediately.\n\nProceed?');
+      if (!confirmed) return;
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const response = await fetch(`${API_BASE}/sos/trigger`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+              window.location.href = `sos-active.html?id=${data.sosEventId}`;
+            } else {
+              alert('⚠️ ' + data.message);
+            }
+          } catch (error) {
+            console.error('SOS error:', error);
+            alert('⚠️ Failed to send alert. Please call 112 directly.');
+          }
+        },
+        (error) => {
+          alert('⚠️ Location access required for SOS.\n\nPlease enable location and try again.');
+        }
+      );
+    }
+
+    // Login
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/user/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          currentUser = data.user;
+          closeModal('loginModal');
+          checkAuth();
+          showNotification('✓ Welcome back!');
+        } else {
+          alert('⚠️ ' + data.message);
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('⚠️ Login failed. Please try again.');
+      }
+    }
+
+    // Register
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const phone = document.getElementById('reg-phone').value;
+      const password = document.getElementById('reg-password').value;
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/user/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password })
+        });
+
+        const data = await response.json();
+        
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          currentUser = data.user;
+          closeModal('registerModal');
+          checkAuth();
+          showNotification('✓ Account created! Please complete your medical profile.');
+          setTimeout(() => openProfileModal(), 1000);
+        } else {
+          alert('⚠️ ' + data.message);
+        }
+      } catch (error) {
+        console.error('Register error:', error);
+        alert('⚠️ Registration failed. Please try again.');
+      }
+    }
+
+    // Profile Update
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      
+      const profileData = {
+        bloodGroup: document.getElementById('blood-group').value,
+        allergies: document.getElementById('allergies').value.split(',').map(s => s.trim()).filter(Boolean),
+        medicalConditions: document.getElementById('conditions').value.split(',').map(s => s.trim()).filter(Boolean),
+        currentMedications: document.getElementById('medications').value.split(',').map(s => s.trim()).filter(Boolean),
+        emergencyContacts: []
+      };
+
+      const ecName = document.getElementById('ec-name').value;
+      const ecPhone = document.getElementById('ec-phone').value;
+      
+      if (ecName && ecPhone) {
+        profileData.emergencyContacts.push({ name: ecName, phone: ecPhone });
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/user/profile`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(profileData)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          closeModal('profileModal');
+          showNotification('✓ Medical profile updated');
+        } else {
+          alert('⚠️ ' + data.message);
+        }
+      } catch (error) {
+        console.error('Profile update error:', error);
+        alert('⚠️ Failed to update profile.');
+      }
+    }
+
+    // Modal Controls
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function openProfileModal() {
+      if (!currentUser) {
+        openModal('loginModal');
+        return;
+      }
+      openModal('profileModal');
+    }
+
+    function toggleUserMenu() {
+      if (!currentUser) {
+        openModal('loginModal');
+      } else {
+        const menu = confirm('User Menu:\n\n1. Edit Profile\n2. Logout\n\nChoose an action:');
+        if (menu) {
+          openProfileModal();
+        } else {
+          logout();
+        }
+      }
+    }
+
+    function logout() {
+      if (confirm('Logout from Black Gold Health?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        currentUser = null;
+        if (socket) socket.disconnect();
+        location.reload();
+      }
+    }
+
+    // Notification
+    function showNotification(message) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Black Gold Health', { body: message });
+      }
+      alert(message);
+    }
+
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  </script>
+</body>
+</html>

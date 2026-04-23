@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hospital Finder – Black Gold</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --accent1: #ff6a00;
+      --accent2: #ee0979;
+      --text: #f0f0f0;
+      --muted: #888;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* AMBIENT GLOW */
+    .glow-orb {
+      position: fixed;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,106,0,0.12) 0%, transparent 70%);
+      top: -200px; left: -100px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: var(--accent1); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 80px 20px 50px;
+      animation: fadeDown 0.8s ease-out both;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 18px;
+      border: 1px solid rgba(255,106,0,0.4);
+      border-radius: 50px;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 520px;
+      margin: 0 auto 40px;
+    }
+
+    /* SEARCH */
+    .search-bar {
+      position: relative;
+      z-index: 10;
+      max-width: 700px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+      animation: fadeUp 0.9s 0.2s ease-out both;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 10px 10px 20px;
+      backdrop-filter: blur(20px);
+      transition: border-color 0.3s;
+    }
+    .search-row:focus-within {
+      border-color: var(--accent1);
+      box-shadow: 0 0 30px rgba(255,106,0,0.15);
+    }
+
+    .search-row input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .search-row input::placeholder { color: var(--muted); }
+
+    .filter-select {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .search-btn {
+      padding: 10px 28px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+    .search-btn:hover { opacity: 0.9; transform: scale(1.03); }
+
+    /* STATS ROW */
+    .stats-row {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 0 20px 60px;
+      flex-wrap: wrap;
+      animation: fadeUp 1s 0.3s ease-out both;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+    /* HOSPITAL CARDS */
+    .results-section {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hospitals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .hospital-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(.22,.61,.36,1), box-shadow 0.35s, border-color 0.35s;
+      animation: fadeUp 0.7s ease-out both;
+      position: relative;
+      overflow: hidden;
+    }
+    .hospital-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .hospital-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(255,106,0,0.2);
+      border-color: rgba(255,106,0,0.3);
+    }
+    .hospital-card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .hospital-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .badge.open { background: rgba(0,200,100,0.15); color: #00c864; border: 1px solid rgba(0,200,100,0.3); }
+    .badge.emergency { background: rgba(255,106,0,0.15); color: var(--accent1); border: 1px solid rgba(255,106,0,0.3); }
+
+    .hospital-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .hospital-type { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
+
+    .meta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .meta-icon { font-size: 0.9rem; }
+
+    .specialties {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .spec-tag {
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: #ccc;
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stars { color: #ffb800; font-size: 0.9rem; }
+    .rating-num { color: var(--muted); font-size: 0.82rem; margin-left: 6px; }
+
+    .directions-btn {
+      padding: 8px 18px;
+      background: transparent;
+      border: 1px solid rgba(255,106,0,0.5);
+      border-radius: 8px;
+      color: var(--accent1);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .directions-btn:hover {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border-color: transparent;
+      color: #fff;
+    }
+
+    /* MAP PLACEHOLDER */
+    .map-section {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto 40px;
+      padding: 0 24px;
+      animation: fadeUp 0.8s 0.4s ease-out both;
+    }
+
+    .map-box {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .map-inner {
+      text-align: center;
+      color: var(--muted);
+    }
+    .map-inner svg { margin-bottom: 12px; opacity: 0.5; }
+    .map-inner p { font-size: 0.9rem; }
+
+    /* Map grid pattern */
+    .map-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,106,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,106,0,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Pulse dots */
+    .pulse-dot {
+      position: absolute;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent1);
+      box-shadow: 0 0 0 0 rgba(255,106,0,0.4);
+      animation: pulse 2s infinite;
+    }
+    .pulse-dot:nth-child(1) { top: 40%; left: 35%; }
+    .pulse-dot:nth-child(2) { top: 55%; left: 60%; }
+    .pulse-dot:nth-child(3) { top: 30%; left: 65%; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,106,0,0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(255,106,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,106,0,0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hospital-card:nth-child(2) { animation-delay: 0.1s; }
+    .hospital-card:nth-child(3) { animation-delay: 0.2s; }
+    .hospital-card:nth-child(4) { animation-delay: 0.3s; }
+    .hospital-card:nth-child(5) { animation-delay: 0.4s; }
+    .hospital-card:nth-child(6) { animation-delay: 0.5s; }
+  </style>
+</head>
+<body>
+  <div class="glow-orb"></div>
+
+  <header>
+    <div class="logo">🏥 Black Gold Health</div>
+    <a href="health_home_black_gold__1_.html" class="back-btn">← Back to Home</a>
+  </header>
+
+  <div class="hero">
+    <div class="hero-badge">🏥 Hospital Finder</div>
+    <h1>Find a <span>Hospital</span><br>Near You</h1>
+    <p>Locate top-rated hospitals, emergency centres, and specialty clinics in your area — instantly.</p>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-row">
+      <span style="font-size:1.1rem">📍</span>
+      <input type="text" placeholder="Enter your location or postcode…" value="Kolkata, West Bengal">
+      <select class="filter-select">
+        <option>All Types</option>
+        <option>Emergency</option>
+        <option>Specialty</option>
+        <option>Government</option>
+        <option>Private</option>
+      </select>
+      <button class="search-btn">Search</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">240+</div><div class="stat-label">Hospitals Listed</div></div>
+    <div class="stat"><div class="stat-num">4.8★</div><div class="stat-label">Avg. Rating</div></div>
+    <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Emergency Info</div></div>
+    <div class="stat"><div class="stat-num">12km</div><div class="stat-label">Avg. Nearest</div></div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-section">
+    <div class="map-box">
+      <div class="pulse-dot"></div>
+      <div class="pulse-dot"></div>
+      <div class="pulse-dot"></div>
+      <div class="map-inner">
+        <svg width="48" height="48" fill="none" stroke="#ff6a00" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <p>Live map — 6 hospitals found near Kolkata</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-section">
+    <div class="section-title">Nearby Hospitals (6 results)</div>
+    <div class="hospitals-grid" id="hospital-grid"></div>
+  </div>
+
+  <script>
+    const hospitals = [
+      { name: "AMRI Hospitals", type: "Multi-Specialty Private", icon: "🏥", status: "open", dist: "1.2 km", time: "8 min", rating: 4.7, reviews: 1240, specs: ["Cardiology", "Neurology", "Oncology"] },
+      { name: "SSKM Hospital", type: "Government Teaching Hospital", icon: "🏛️", status: "emergency", dist: "2.8 km", time: "12 min", rating: 4.3, reviews: 3800, specs: ["Emergency", "Surgery", "Pediatrics"] },
+      { name: "Apollo Gleneagles", type: "Super-Specialty Private", icon: "⚕️", status: "open", dist: "4.1 km", time: "18 min", rating: 4.8, reviews: 2950, specs: ["Oncology", "Transplant", "Cardiology"] },
+      { name: "Calcutta Medical College", type: "Government Medical College", icon: "🎓", status: "open", dist: "3.5 km", time: "15 min", rating: 4.2, reviews: 5100, specs: ["Surgery", "OB/GYN", "Psychiatry"] },
+      { name: "Fortis Hospital Kolkata", type: "Corporate Multi-Specialty", icon: "🔬", status: "open", dist: "6.0 km", time: "22 min", rating: 4.6, reviews: 1780, specs: ["Orthopedics", "Urology", "Dermatology"] },
+      { name: "RN Tagore Hospital", type: "Cardiac & Vascular Center", icon: "❤️", status: "emergency", dist: "7.3 km", time: "28 min", rating: 4.9, reviews: 990, specs: ["Cardiac", "Vascular", "Critical Care"] },
+    ];
+
+    const grid = document.getElementById('hospital-grid');
+    hospitals.forEach((h, i) => {
+      const stars = '★'.repeat(Math.floor(h.rating)) + (h.rating % 1 >= 0.5 ? '½' : '');
+      grid.innerHTML += `
+        <div class="hospital-card">
+          <div class="card-top">
+            <div class="hospital-icon">${h.icon}</div>
+            <span class="badge ${h.status}">${h.status === 'open' ? '● Open Now' : '🚨 Emergency'}</span>
+          </div>
+          <div class="hospital-name">${h.name}</div>
+          <div class="hospital-type">${h.type}</div>
+          <div class="meta-row">
+            <span class="meta-item"><span class="meta-icon">📍</span>${h.dist} away</span>
+            <span class="meta-item"><span class="meta-icon">🚗</span>${h.time} drive</span>
+          </div>
+          <div class="specialties">${h.specs.map(s => `<span class="spec-tag">${s}</span>`).join('')}</div>
+          <div class="rating-row">
+            <div><span class="stars">${'★'.repeat(Math.floor(h.rating))}</span><span class="rating-num">${h.rating} (${h.reviews.toLocaleString()} reviews)</span></div>
+            <button class="directions-btn">Directions →</button>
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

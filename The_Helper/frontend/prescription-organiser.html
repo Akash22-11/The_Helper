@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prescription Organiser – Black Gold</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0b0d;
+      --card: rgba(255,255,255,0.04);
+      --card-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.07);
+      --accent1: #ff6a00;
+      --accent2: #ee0979;
+      --text: #f0f0f0;
+      --muted: #666;
+      --green: #00e676;
+      --yellow: #ffb300;
+      --red: #ff4444;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .glow {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow1 { width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(255,106,0,0.07) 0%, transparent 70%); top: 0; right: -200px; }
+    .glow2 { width: 500px; height: 500px; background: radial-gradient(ellipse, rgba(238,9,121,0.06) 0%, transparent 70%); bottom: -100px; left: -100px; }
+
+    header {
+      position: relative; z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .back-btn { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .back-btn:hover { color: var(--accent1); }
+
+    /* LAYOUT */
+    .layout {
+      position: relative; z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 28px;
+    }
+
+    /* PAGE HEADER */
+    .page-head {
+      position: relative; z-index: 10;
+      padding: 60px 24px 36px;
+      max-width: 1200px;
+      margin: 0 auto;
+      animation: fadeDown 0.8s ease-out;
+    }
+    .page-tag {
+      display: inline-block;
+      padding: 6px 18px;
+      border: 1px solid rgba(255,106,0,0.35);
+      border-radius: 50px;
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 20px;
+    }
+    .page-head h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+    }
+    .page-head h1 span {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-head p { color: var(--muted); margin-top: 12px; max-width: 500px; }
+
+    /* SIDEBAR */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeUp 0.8s 0.2s ease-out both;
+    }
+
+    .sidebar-widget {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    .widget-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* SUMMARY STATS */
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-item:last-child { border: none; }
+    .stat-left { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
+    .stat-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .stat-count { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; }
+
+    /* UPCOMING ALERTS */
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .alert-item:last-child { border: none; }
+    .alert-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .alert-name { font-size: 0.88rem; font-weight: 500; margin-bottom: 3px; }
+    .alert-time { font-size: 0.75rem; color: var(--muted); }
+    .alert-urgency {
+      margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .urgent { background: rgba(255,68,68,0.15); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
+    .soon { background: rgba(255,179,0,0.15); color: var(--yellow); border: 1px solid rgba(255,179,0,0.3); }
+    .ok { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+
+    /* ADD BUTTON */
+    .add-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .add-btn:hover { opacity: 0.9; transform: scale(1.02); }
+
+    /* MAIN CONTENT */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeUp 0.8s 0.3s ease-out both;
+    }
+
+    /* TOP ROW */
+    .top-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-mini {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      transition: border-color 0.3s;
+    }
+    .search-mini:focus-within { border-color: var(--accent1); }
+    .search-mini input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .search-mini input::placeholder { color: var(--muted); }
+    .view-toggle {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .view-btn {
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .view-btn.active, .view-btn:hover {
+      background: rgba(255,106,0,0.12);
+      color: var(--accent1);
+    }
+
+    /* PRESCRIPTION CARDS */
+    .rx-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .rx-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(.22,.61,.36,1), box-shadow 0.3s, border-color 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .rx-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .rx-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(255,106,0,0.18);
+      border-color: rgba(255,106,0,0.25);
+    }
+    .rx-card:hover::after { transform: scaleX(1); }
+
+    .rx-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+    .rx-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .rx-status {
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .active-rx { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+    .refill-rx { background: rgba(255,179,0,0.12); color: var(--yellow); border: 1px solid rgba(255,179,0,0.3); }
+    .expired-rx { background: rgba(255,68,68,0.1); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
+
+    .rx-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .rx-dose { font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; }
+
+    .rx-info { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+    .rx-row { display: flex; justify-content: space-between; font-size: 0.8rem; }
+    .rx-row .lbl { color: var(--muted); }
+    .rx-row .val { font-weight: 500; }
+
+    .rx-footer {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-sm {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent1);
+      color: var(--accent1);
+    }
+    .btn-fill {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none;
+      color: #fff;
+    }
+    .btn-fill:hover { opacity: 0.9; }
+
+    /* SCHEDULE TIMELINE */
+    .timeline-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+    .timeline-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .time-slot {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .time-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .time-meds { display: flex; flex-direction: column; gap: 6px; }
+    .time-med {
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      background: rgba(255,106,0,0.1);
+      color: var(--accent1);
+      border: 1px solid rgba(255,106,0,0.2);
+    }
+    .time-med.taken {
+      background: rgba(0,230,118,0.08);
+      color: var(--green);
+      border-color: rgba(0,230,118,0.2);
+    }
+
+    /* MODAL OVERLAY */
+    .modal-bg {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+      background: #1a1a1f;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      width: 480px;
+      max-width: 95vw;
+      animation: popIn 0.3s ease-out;
+    }
+    @keyframes popIn { from { opacity:0; transform:scale(0.9);} to {opacity:1; transform:scale(1);}}
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+    .modal-head h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; transition: color 0.2s; }
+    .modal-close:hover { color: var(--text); }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-input:focus { border-color: var(--accent1); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+    .form-submit:hover { opacity: 0.9; }
+
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-30px);} to {opacity:1; transform:translateY(0);}}
+    @keyframes fadeUp { from { opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);}}
+
+    @media(max-width:800px){
+      .layout{grid-template-columns:1fr;}
+      .timeline{grid-template-columns:repeat(2,1fr);}
+    }
+  </style>
+</head>
+<body>
+  <div class="glow glow1"></div>
+  <div class="glow glow2"></div>
+
+  <header>
+    <div class="logo">📋 Black Gold Health</div>
+    <a href="health_home_black_gold__1_.html" class="back-btn">← Back to Home</a>
+  </header>
+
+  <div class="page-head">
+    <div class="page-tag">📋 Prescription Organiser</div>
+    <h1>Manage Your <span>Medications</span><br>with Clarity</h1>
+    <p>Track prescriptions, set reminders, and never miss a refill again.</p>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <button class="add-btn" onclick="document.querySelector('.modal-bg').classList.add('show')">+ Add Prescription</button>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Summary</div>
+        <div class="stat-item">
+          <div class="stat-left"><div class="stat-dot" style="background:var(--green)"></div>Active</div>
+          <div class="stat-count" style="color:var(--green)">4</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-left"><div class="stat-dot" style="background:var(--yellow)"></div>Needs Refill</div>
+          <div class="stat-count" style="color:var(--yellow)">2</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-left"><div class="stat-dot" style="background:var(--red)"></div>Expired</div>
+          <div class="stat-count" style="color:var(--red)">1</div>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Upcoming Doses</div>
+        <div id="alerts-list"></div>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Doctor Contacts</div>
+        <div style="font-size:0.85rem; color:var(--muted); line-height:1.7;">
+          <div style="color:var(--text); font-weight:500; margin-bottom:4px;">Dr. Priya Sharma</div>
+          <div>Cardiologist · +91 98300 00001</div>
+          <div style="margin-top:12px; color:var(--text); font-weight:500; margin-bottom:4px;">Dr. Arnav Roy</div>
+          <div>General Physician · +91 98300 00002</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+      <div class="top-row">
+        <div class="search-mini">
+          <span>🔍</span>
+          <input type="text" placeholder="Search prescriptions…">
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active">⊞</button>
+          <button class="view-btn">☰</button>
+        </div>
+      </div>
+
+      <div class="rx-grid" id="rx-grid"></div>
+
+      <!-- SCHEDULE TIMELINE -->
+      <div class="timeline-section">
+        <div class="timeline-title">📅 Today's Schedule</div>
+        <div class="timeline">
+          <div class="time-slot">
+            <div class="time-label">Morning 8 AM</div>
+            <div class="time-meds">
+              <div class="time-med taken">✓ Metformin</div>
+              <div class="time-med taken">✓ Vitamin D</div>
+            </div>
+          </div>
+          <div class="time-slot">
+            <div class="time-label">Afternoon 1 PM</div>
+            <div class="time-meds">
+              <div class="time-med taken">✓ Amlodipine</div>
+            </div>
+          </div>
+          <div class="time-slot">
+            <div class="time-label">Evening 6 PM</div>
+            <div class="time-meds">
+              <div class="time-med">Metformin</div>
+              <div class="time-med">Pantoprazole</div>
+            </div>
+          </div>
+          <div class="time-slot">
+            <div class="time-label">Night 10 PM</div>
+            <div class="time-meds">
+              <div class="time-med">Atorvastatin</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD MODAL -->
+  <div class="modal-bg" onclick="if(event.target===this) this.classList.remove('show')">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Add Prescription</h3>
+        <button class="modal-close" onclick="document.querySelector('.modal-bg').classList.remove('show')">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Medicine Name</label>
+        <input class="form-input" type="text" placeholder="e.g. Metformin 500mg">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Dosage</label>
+          <input class="form-input" type="text" placeholder="e.g. 1 tablet">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Frequency</label>
+          <select class="form-input">
+            <option>Once daily</option>
+            <option>Twice daily</option>
+            <option>Three times daily</option>
+            <option>As needed</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input class="form-input" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Date</label>
+          <input class="form-input" type="date">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Doctor Name</label>
+        <input class="form-input" type="text" placeholder="Prescribing physician">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <input class="form-input" type="text" placeholder="Take after food, avoid alcohol…">
+      </div>
+      <button class="form-submit" onclick="document.querySelector('.modal-bg').classList.remove('show')">Save Prescription</button>
+    </div>
+  </div>
+
+  <script>
+    const prescriptions = [
+      { icon: "💊", name: "Metformin 500mg", dose: "1 tablet · Twice daily · After food", status: "active", doctor: "Dr. Priya Sharma", refillDate: "May 10, 2026", pills: "22 left", adherence: "92%" },
+      { icon: "❤️", name: "Amlodipine 5mg", dose: "1 tablet · Once daily · Morning", status: "refill", doctor: "Dr. Priya Sharma", refillDate: "Apr 22, 2026", pills: "4 left", adherence: "88%" },
+      { icon: "🧡", name: "Atorvastatin 20mg", dose: "1 tablet · Once daily · Night", status: "active", doctor: "Dr. Arnav Roy", refillDate: "May 18, 2026", pills: "30 left", adherence: "96%" },
+      { icon: "🌿", name: "Vitamin D3 1000IU", dose: "1 capsule · Once daily · Morning", status: "active", doctor: "Self-prescribed", refillDate: "Jun 01, 2026", pills: "45 left", adherence: "79%" },
+      { icon: "🔵", name: "Pantoprazole 40mg", dose: "1 tablet · Once daily · Before food", status: "refill", doctor: "Dr. Arnav Roy", refillDate: "Apr 20, 2026", pills: "2 left", adherence: "85%" },
+      { icon: "⚪", name: "Cetirizine 10mg", dose: "1 tablet · As needed", status: "expired", doctor: "Dr. Arnav Roy", refillDate: "Mar 15, 2026", pills: "Expired", adherence: "—" },
+    ];
+
+    const statusMap = { active: ['active-rx', '● Active'], refill: ['refill-rx', '⚠ Refill Soon'], expired: ['expired-rx', '✕ Expired'] };
+
+    const grid = document.getElementById('rx-grid');
+    prescriptions.forEach(rx => {
+      const [cls, lbl] = statusMap[rx.status];
+      grid.innerHTML += `
+        <div class="rx-card">
+          <div class="rx-top">
+            <div class="rx-icon">${rx.icon}</div>
+            <span class="rx-status ${cls}">${lbl}</span>
+          </div>
+          <div class="rx-name">${rx.name}</div>
+          <div class="rx-dose">${rx.dose}</div>
+          <div class="rx-info">
+            <div class="rx-row"><span class="lbl">Doctor</span><span class="val">${rx.doctor}</span></div>
+            <div class="rx-row"><span class="lbl">Refill by</span><span class="val">${rx.refillDate}</span></div>
+            <div class="rx-row"><span class="lbl">Pills left</span><span class="val">${rx.pills}</span></div>
+            <div class="rx-row"><span class="lbl">Adherence</span><span class="val" style="color:var(--green)">${rx.adherence}</span></div>
+          </div>
+          <div class="rx-footer">
+            <button class="btn-sm btn-outline">Edit</button>
+            <button class="btn-sm btn-fill">Refill →</button>
+          </div>
+        </div>`;
+    });
+
+    const alerts = [
+      { icon: "⏰", name: "Amlodipine 5mg", time: "Today 8:00 AM", cls: "ok" },
+      { icon: "⚠️", name: "Pantoprazole 40mg", time: "Refill in 2 days", cls: "urgent" },
+      { icon: "🔔", name: "Metformin 500mg", time: "Due at 6:00 PM", cls: "soon" },
+    ];
+
+    const aList = document.getElementById('alerts-list');
+    alerts.forEach(a => {
+      aList.innerHTML += `
+        <div class="alert-item">
+          <div class="alert-icon">${a.icon}</div>
+          <div><div class="alert-name">${a.name}</div><div class="alert-time">${a.time}</div></div>
+          <span class="alert-urgency ${a.cls}">${a.cls === 'urgent' ? '!' : a.cls === 'soon' ? '~' : '✓'}</span>
+        </div>`;
+    });
+
+    document.querySelectorAll('.view-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

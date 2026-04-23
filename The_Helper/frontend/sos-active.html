@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Alert Active – Black Gold Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0d0f;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.07);
+      --accent1: #ff6a00;
+      --accent2: #ee0979;
+      --text: #f0f0f0;
+      --muted: #777;
+      --green: #00e676;
+      --red: #ff4444;
+      --yellow: #ffb300;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ALERT BACKGROUND */
+    .alert-bg {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,68,68,0.15) 0%, transparent 70%);
+      animation: pulse-bg 2s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes pulse-bg {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* HEADER */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      border-bottom: 1px solid rgba(255,68,68,0.3);
+      backdrop-filter: blur(20px);
+      background: rgba(255,68,68,0.05);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-badge {
+      padding: 8px 18px;
+      background: rgba(255,68,68,0.2);
+      border: 1px solid var(--red);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* MAIN CONTENT */
+    .emergency-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    /* STATUS CARD */
+    .status-card {
+      background: linear-gradient(135deg, rgba(255,68,68,0.15), rgba(255,106,0,0.1));
+      border: 2px solid var(--red);
+      border-radius: 24px;
+      padding: 50px 40px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeDown 0.6s ease-out;
+    }
+
+    .status-icon {
+      font-size: 5rem;
+      margin-bottom: 20px;
+      animation: rotate 2s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .status-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+
+    .status-message {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .timer {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent1);
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+    }
+
+    /* ACTION BUTTONS */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-cancel {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-cancel:hover {
+      background: #ff2222;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,68,68,0.4);
+    }
+
+    .btn-safe {
+      background: var(--green);
+      color: #000;
+    }
+
+    .btn-safe:hover {
+      background: #00ff88;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,230,118,0.4);
+    }
+
+    /* HOSPITALS ALERTED */
+    .hospitals-section {
+      animation: fadeUp 0.6s 0.2s ease-out both;
+    }
+
+    .section-header {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hospital-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hospital-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.3s;
+      animation: slideIn 0.6s ease-out both;
+    }
+
+    .hospital-card:nth-child(1) { animation-delay: 0.1s; }
+    .hospital-card:nth-child(2) { animation-delay: 0.2s; }
+    .hospital-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .hospital-card.acknowledged {
+      border-color: var(--yellow);
+      background: rgba(255,179,0,0.05);
+    }
+
+    .hospital-card.accepted {
+      border-color: var(--green);
+      background: rgba(0,230,118,0.05);
+    }
+
+    .hospital-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+
+    .hospital-info {
+      flex: 1;
+    }
+
+    .hospital-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .hospital-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .hospital-status {
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-alerted {
+      background: rgba(255,106,0,0.1);
+      color: var(--accent1);
+      border: 1px solid rgba(255,106,0,0.3);
+    }
+
+    .status-acknowledged {
+      background: rgba(255,179,0,0.1);
+      color: var(--yellow);
+      border: 1px solid rgba(255,179,0,0.3);
+    }
+
+    .status-responding {
+      background: rgba(0,230,118,0.1);
+      color: var(--green);
+      border: 1px solid rgba(0,230,118,0.3);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    /* MEDICAL INFO */
+    .medical-info {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      margin-top: 40px;
+      animation: fadeUp 0.6s 0.3s ease-out both;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+    }
+
+    .info-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* LOADING SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 18px 24px; }
+      .status-card { padding: 40px 24px; }
+      .status-icon { font-size: 3.5rem; }
+      .status-title { font-size: 2rem; }
+      .timer { font-size: 2.2rem; }
+      .action-buttons { flex-direction: column; }
+      .btn { width: 100%; justify-content: center; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="alert-bg"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <span>🚨</span>
+      Emergency Active
+    </div>
+    <div class="alert-badge">
+      <span class="spinner"></span>
+      <span>HELP ON THE WAY</span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="emergency-container">
+    <!-- STATUS CARD -->
+    <div class="status-card">
+      <div class="status-icon">🚨</div>
+      <div class="status-title">Emergency Alert Active</div>
+      <div class="status-message" id="status-message">
+        Notifying nearby hospitals with your location and medical profile...
+      </div>
+      <div class="timer" id="timer">00:00</div>
+      <div class="action-buttons">
+        <button class="btn btn-cancel" onclick="cancelSOS()">
+          <span>✖</span>
+          <span>Cancel Alert</span>
+        </button>
+        <button class="btn btn-safe" onclick="markSafe()">
+          <span>✓</span>
+          <span>I'm Safe Now</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- HOSPITALS ALERTED -->
+    <div class="hospitals-section">
+      <div class="section-header">
+        <span>🏥</span>
+        <span>Hospitals Alerted (<span id="hospital-count">0</span>)</span>
+      </div>
+      <div class="hospital-list" id="hospital-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- MEDICAL INFO SHARED -->
+    <div class="medical-info">
+      <div class="section-header">
+        <span>💉</span>
+        <span>Medical Information Shared</span>
+      </div>
+      <div class="info-grid" id="medical-info">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    // Configuration
+    const API_BASE = 'http://localhost:5000/api';
+    const urlParams = new URLSearchParams(window.location.search);
+    const sosEventId = urlParams.get('id');
+    
+    let socket = null;
+    let startTime = Date.now();
+    let timerInterval = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!sosEventId) {
+        alert('Invalid emergency session');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      initSocket();
+      loadSOSStatus();
+      startTimer();
+      playAlertSound();
+    });
+
+    // Socket Connection
+    function initSocket() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      socket = io(API_BASE.replace('/api', ''), {
+        auth: { token }
+      });
+
+      socket.on('connect', () => {
+        console.log('✓ Connected to emergency network');
+      });
+
+      socket.on('sos:hospital_responding', (data) => {
+        console.log('Hospital responding:', data);
+        updateHospitalStatus(data.hospitalId, 'accepted');
+        showNotification(`🏥 ${data.hospital.name} is sending help!`);
+        document.getElementById('status-message').innerHTML = 
+          `<strong style="color: var(--green);">✓ ${data.hospital.name} is responding!</strong><br>Help is on the way.`;
+      });
+
+      socket.on('sos:eta_update', (data) => {
+        showNotification(`⏱️ Estimated arrival: ${data.etaMinutes} minutes`);
+      });
+
+      socket.on('sos:cancelled', () => {
+        window.location.href = 'index.html';
+      });
+    }
+
+    // Load SOS Status
+    async function loadSOSStatus() {
+      try {
+        const response = await fetch(`${API_BASE}/sos/${sosEventId}/status`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          displayHospitals(data.hospitals);
+          displayMedicalInfo(data.medicalSnapshot);
+          
+          if (data.status === 'resolved' || data.status === 'cancelled') {
+            window.location.href = 'index.html';
+          }
+        }
+      } catch (error) {
+        console.error('Status load error:', error);
+      }
+    }
+
+    // Display Hospitals
+    function displayHospitals(hospitals) {
+      const list = document.getElementById('hospital-list');
+      document.getElementById('hospital-count').textContent = hospitals.length;
+
+      if (hospitals.length === 0) {
+        list.innerHTML = '<p style="text-align: center; color: var(--muted); padding: 40px;">No hospitals found nearby. Calling 112...</p>';
+        setTimeout(() => {
+          if (confirm('No registered hospitals nearby.\n\nWould you like to call emergency services (112)?')) {
+            window.location.href = 'tel:112';
+          }
+        }, 3000);
+        return;
+      }
+
+      hospitals.forEach(hospital => {
+        const card = document.createElement('div');
+        card.className = 'hospital-card';
+        card.id = `hospital-${hospital._id || hospital.placeId}`;
+        
+        let status = 'alerted';
+        let statusText = 'Alerted';
+        
+        if (hospital.acknowledged) {
+          status = 'acknowledged';
+          statusText = 'Acknowledged';
+          card.classList.add('acknowledged');
+        }
+        
+        if (hospital.accepted) {
+          status = 'responding';
+          statusText = '🚑 Responding';
+          card.classList.add('accepted');
+        }
+
+        card.innerHTML = `
+          <div class="hospital-icon">🏥</div>
+          <div class="hospital-info">
+            <div class="hospital-name">${hospital.name}</div>
+            <div class="hospital-meta">
+              <span>📍 ${(hospital.distanceMeters / 1000).toFixed(1)} km away</span>
+              <span>📞 ${hospital.phone || 'N/A'}</span>
+            </div>
+          </div>
+          <div class="hospital-status status-${status}">${statusText}</div>
+        `;
+        
+        list.appendChild(card);
+      });
+    }
+
+    // Display Medical Info
+    function displayMedicalInfo(medical) {
+      const container = document.getElementById('medical-info');
+      
+      const info = [
+        { label: 'Blood Group', value: medical.bloodGroup || 'Unknown', icon: '🩸' },
+        { label: 'Allergies', value: medical.allergies?.join(', ') || 'None listed', icon: '⚠️' },
+        { label: 'Medical Conditions', value: medical.medicalConditions?.join(', ') || 'None listed', icon: '📋' },
+        { label: 'Current Medications', value: medical.currentMedications?.join(', ') || 'None listed', icon: '💊' }
+      ];
+
+      info.forEach(item => {
+        container.innerHTML += `
+          <div class="info-item">
+            <div class="info-label">${item.icon} ${item.label}</div>
+            <div class="info-value">${item.value}</div>
+          </div>
+        `;
+      });
+    }
+
+    // Update Hospital Status
+    function updateHospitalStatus(hospitalId, status) {
+      const card = document.getElementById(`hospital-${hospitalId}`);
+      if (!card) return;
+
+      card.classList.remove('acknowledged', 'accepted');
+      
+      const statusBadge = card.querySelector('.hospital-status');
+      
+      if (status === 'acknowledged') {
+        card.classList.add('acknowledged');
+        statusBadge.className = 'hospital-status status-acknowledged';
+        statusBadge.textContent = 'Acknowledged';
+      } else if (status === 'accepted') {
+        card.classList.add('accepted');
+        statusBadge.className = 'hospital-status status-responding';
+        statusBadge.textContent = '🚑 Responding';
+      }
+    }
+
+    // Timer
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('timer').textContent = 
+          `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    // Cancel SOS
+    async function cancelSOS() {
+      if (!confirm('Cancel emergency alert?\n\nThis will stop all hospital notifications.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/sos/${sosEventId}/cancel`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          clearInterval(timerInterval);
+          alert('✓ Emergency alert cancelled');
+          window.location.href = 'index.html';
+        }
+      } catch (error) {
+        console.error('Cancel error:', error);
+        alert('⚠️ Failed to cancel alert');
+      }
+    }
+
+    // Mark Safe
+    async function markSafe() {
+      if (!confirm('Confirm you are safe?\n\nThis will close the emergency alert.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/sos/${sosEventId}/resolve`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          clearInterval(timerInterval);
+          alert('✓ Marked as safe. Stay well!');
+          window.location.href = 'index.html';
+        }
+      } catch (error) {
+        console.error('Resolve error:', error);
+        alert('⚠️ Failed to update status');
+      }
+    }
+
+    // Alert Sound
+    function playAlertSound() {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance('Emergency alert active. Help is on the way.');
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Notification
+    function showNotification(message) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Black Gold Health', { 
+          body: message,
+          icon: '/favicon.ico',
+          requireInteraction: true
+        });
+      }
+    }
+
+    // Prevent accidental navigation
+    window.addEventListener('beforeunload', (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    });
+
+    // Poll status every 5 seconds
+    setInterval(loadSOSStatus, 5000);
+  </script>
+</body>
+</html>
