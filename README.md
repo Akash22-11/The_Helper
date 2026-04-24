@@ -1,7 +1,7 @@
 # 🚑 CareCompass — Real-Time Emergency Response System
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff6a00,100:ee0979&height=200&section=header&text=The_Helper&fontSize=45&fontColor=ffffff&animation=fadeIn&fontAlignY=35" />
+  <!-- <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff6a00,100:ee0979&height=200&section=header&text=The_Helper&fontSize=45&fontColor=ffffff&animation=fadeIn&fontAlignY=35" /> -->
 </p>
 
 <h2 align="center">🚑 Real-Time Emergency Response System</h2>
