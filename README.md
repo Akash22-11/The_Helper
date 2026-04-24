@@ -1,4 +1,4 @@
-# 🚑 The_Helper — Real-Time Emergency Response System
+# 🚑 CareCompass — Real-Time Emergency Response System
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff6a00,100:ee0979&height=200&section=header&text=The_Helper&fontSize=45&fontColor=ffffff&animation=fadeIn&fontAlignY=35" />
@@ -23,7 +23,7 @@
 ---
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?color=F70000&size=28&center=true&vCenter=true&width=900&lines=🚑+The_Helper+–+Emergency+Healthcare+Platform;⚡+One-Tap+SOS+System+with+Real-Time+Response;📍+Find+Nearby+Hospitals+%26+Pharmacies+Instantly;🧠+Smart+Health+Tracking+%26+Prescription+Manager;💙+Built+to+Save+Lives+with+Technology" />
+  <img src="https://readme-typing-svg.herokuapp.com?color=F70000&size=28&center=true&vCenter=true&width=900&lines=🚑+CareCompass+–+Emergency+Healthcare+Platform;⚡+One-Tap+SOS+System+with+Real-Time+Response;📍+Find+Nearby+Hospitals+%26+Pharmacies+Instantly;🧠+Smart+Health+Tracking+%26+Prescription+Manager;💙+Built+to+Save+Lives+with+Technology" />
 </p>
 
 ---
@@ -75,7 +75,7 @@ In emergency situations, people often face critical delays due to:
 
 ## 🚀 Solution
 
-**The_Helper** provides a one-tap SOS system that:
+**Care_Compass** provides a one-tap SOS system that:
 - Instantly shares user location 📍  
 - Notifies nearby hospitals in real-time ⚡  
 - Tracks response and ETA ⏱️  
