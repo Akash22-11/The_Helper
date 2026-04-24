@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://github.com/Akash22-11/The_Helper">
-    <img src="https://img.shields.io/badge/View%20Project-000?style=for-the-badge&logo=github&logoColor=white"/>
+    <!-- <img src="https://img.shields.io/badge/View%20Project-000?style=for-the-badge&logo=github&logoColor=white"/> -->
   </a>
   <a href="#">
     <img src="https://img.shields.io/badge/Live%20Demo-ff6a00?style=for-the-badge&logo=vercel&logoColor=white"/>
