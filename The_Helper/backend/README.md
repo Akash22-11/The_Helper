@@ -12,7 +12,7 @@ Complete Node.js/Express backend for the Black Gold Health emergency healthcare 
 ### Installation;
 
 ```bash
-cd backend
+cd backen
 
 # Install dependencies
 npm install
