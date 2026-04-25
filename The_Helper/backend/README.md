@@ -9,7 +9,7 @@ Complete Node.js/Express backend for the Black Gold Health emergency healthcare 
 - MongoDB 4.4+ (local or MongoDB Atlas)
 - npm or yarn
 
-### Installation
+### Installation;
 
 ```bash
 cd backend
