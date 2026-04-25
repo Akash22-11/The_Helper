@@ -34,7 +34,7 @@
 | Nodemailer | 6.9+ | Email notifications |
 | Twilio | 4.19+ | SMS notifications |
 
-## Architecture Diagram
+## Architecture Diagram;
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
